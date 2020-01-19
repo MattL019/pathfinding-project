@@ -1,13 +1,15 @@
+const api = 'https://pathfinding-algorithms.herokuapp.com:5000'
+
 // Get a random maze
 export async function getRandomMaze(size) {
-  return fetch(`http://localhost:5000/random_maze?width=${size}&height=${size}`)
+  return fetch(`${api}/random_maze?width=${size}&height=${size}`)
     .then(response => response.json())
     .then(json => json.maze)
 }
 
 // Solve the maze and return the solved maze
 export async function solveMaze(algorithm, maze) {
-  return fetch(`http://localhost:5000/solve/${algorithm}`, {
+  return fetch(`${api}/solve/${algorithm}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
