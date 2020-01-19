@@ -1,0 +1,3 @@
+DEBUG=True
+TEMPLATES_AUTO_RELOAD=True
+FLASK_ENV='development'
