@@ -1,4 +1,4 @@
-const api = 'https://pathfinding-algorithms.herokuapp.com'
+const api = 'http://localhost:5000' //'https://pathfinding-algorithms.herokuapp.com'
 
 // Get a random maze
 export async function getRandomMaze(size) {
