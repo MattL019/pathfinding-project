@@ -51,7 +51,7 @@ def solve(maze):
   start_time = time.time() # Store the starting time
   shortest_path = [] # Stores the shortest path
   paths_tried = 0
-  visited_coordinates = set()
+  visited_coordinates = [] # Stores all of our visited coordinates for visual representation
 
   # While we do not have a shortest path
   while len(shortest_path) == 0:
@@ -69,16 +69,15 @@ def solve(maze):
 
       # If potential path leads to END of maze, set shortest path, which breaks while loop
       if maze[potential_move[1]][potential_move[0]] == "X":
-        print("solved")
         shortest_path =  new_path
         break
 
       # Potential path is not shortest but is valid - add to queue
       q.put(new_path)
-      visited_coordinates.add(potential_move) # Add new coords to visited coordinates
+      visited_coordinates.append(potential_move) # Add new coords to visited coordinates
     
   return {
-    "visited_coordinates": list(visited_coordinates),
+    "visited_coordinates": list(dict.fromkeys(visited_coordinates)),
     "paths_tried": paths_tried,
     "shortest_path": shortest_path,
     "time_elapsed_ms": round((time.time() - start_time) * 1000, 3) # Calculate time elapsed
