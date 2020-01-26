@@ -50,13 +50,12 @@ def solve(maze):
 
   start_time = time.time() # Store the starting time
   shortest_path = [] # Stores the shortest path
-  historical_coordinates = [] # 2D List where each index stores a list of visited coords (tuples) for each iteration
+  paths_tried = 0
+  visited_coordinates = set()
 
   # While we do not have a shortest path
   while len(shortest_path) == 0:
-    # A list that holds all new coordinates from potential paths for this iteration
-    iteration_coordinates = []
-
+    paths_tried += 1
     current_path = q.get() # Retrieve oldest path from queue
 
     for move in [(-1, 0), (1, 0), (0, 1), (0, -1)]: # Loop through each direction
@@ -76,19 +75,18 @@ def solve(maze):
 
       # Potential path is not shortest but is valid - add to queue
       q.put(new_path)
-      iteration_coordinates.append(potential_move) # Append coords to iteration coordinates
+      visited_coordinates.add(potential_move) # Add new coords to visited coordinates
     
-    historical_coordinates.append(iteration_coordinates) # Add iteration coords to overall coords
-
   return {
-    "historical_coordinates": historical_coordinates,
+    "visited_coordinates": list(visited_coordinates),
+    "paths_tried": paths_tried,
     "shortest_path": shortest_path,
     "time_elapsed_ms": round((time.time() - start_time) * 1000, 3) # Calculate time elapsed
   }
 
 # Example
-print(solve([
+"""print(solve([
   ["O"," ","#"],
   [" "," ","#"],
   ["#"," ","X"]
-]))
+]))"""
