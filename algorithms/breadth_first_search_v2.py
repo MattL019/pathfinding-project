@@ -39,7 +39,7 @@ def find_start(maze):
       if maze[y][x] == "O": return (x, y) # Check each point in maze, return coords with start position
   return False # False if we did not find a starting position
 
-def solve(maze):
+def solve(maze, timeout=5):
   """Solves provided maze, returning the visited coordinates, shortest path and time elapsed"""
   start = find_start(maze) # (x, y) starting position
 
@@ -55,12 +55,19 @@ def solve(maze):
 
   # While we do not have a shortest path
   while len(shortest_path) == 0:
+    if (time.time() - start_time) > timeout: return { "error": "Timed out" } # Return error if algo takes longer than timeout
+
     paths_tried += 1
+
+    if q.empty(): return False # Our queue is empty which means there are no more possible paths. Impossible maze
+
     current_path = q.get() # Retrieve oldest path from queue
+
+    # If there is no more paths then it must be impossible so return error
+    if current_path == None: return { "error": "Maze is impossible" } 
 
     for move in [(-1, 0), (1, 0), (0, 1), (0, -1)]: # Loop through each direction
       # our potential path, by adding the current move tuple
-
       potential_move = (current_path[-1][0] + move[0], current_path[-1][1] + move[1])
       # Check is new move coords are valid. Continue/skip if not..
       if not valid_pos(maze, start, path=current_path, new_move=potential_move): continue
@@ -69,13 +76,13 @@ def solve(maze):
 
       # If potential path leads to END of maze, set shortest path, which breaks while loop
       if maze[potential_move[1]][potential_move[0]] == "X":
-        shortest_path =  new_path
+        shortest_path = new_path
         break
 
       # Potential path is not shortest but is valid - add to queue
       q.put(new_path)
       visited_coordinates.append(potential_move) # Add new coords to visited coordinates
-    
+
   return {
     "visited_coordinates": list(dict.fromkeys(visited_coordinates)),
     "paths_tried": paths_tried,
@@ -85,7 +92,7 @@ def solve(maze):
 
 # Example
 """print(solve([
-  ["O"," ","#"],
-  [" "," ","#"],
+  ["O","#","#"],
+  ["#","#","#"],
   ["#"," ","X"]
 ]))"""

@@ -40,10 +40,13 @@ document.getElementById('btn__solve').onclick = async () => {
 
   mazeCanvas.loading = true
   const solvedMaze = await solveMaze(algorithm, currentMaze) // Call API for solved maze
+
+  console.log(solvedMaze)
+
   mazeCanvas.loading = false
   mazeCanvas.solveMaze(solvedMaze) // Solve the maze
 
-  mazeStatus.innerText = `Solved in ${ Math.round(solvedMaze.time_elapsed_ms) } ms.`
+  setStatus(solvedMaze) // set maze status
 }
 /**
  * @desc Resets the maze to default.
@@ -52,7 +55,8 @@ document.getElementById('btn__reset').onclick = () => {
   if (mazeCanvas.solving) mazeCanvas.cancelSolve() // If maze is being solved, cancel the solve
   mazeCanvas.resetMaze()
   mazeCanvas.loadMaze(basicMaze)
-  mazeStatus.innerText = ''
+  
+  clearStatus() // Clear maze status
 }
 /**
  * @desc Scrambles the maze
@@ -68,5 +72,21 @@ document.getElementById('btn__scramble').onclick = async () => {
   const randomMaze = await getRandomMaze(9)
   mazeCanvas.loading = false
   mazeCanvas.loadMaze(randomMaze)
+
+  clearStatus() // clear maze status
+}
+
+/**
+ * @desc Sets the maze status with the current solution's info
+ * @param { object } solutionInfo 
+ */
+function setStatus(solutionInfo) {
+  mazeStatus.innerHTML = `Solved in <strong>${ Math.round(solutionInfo.time_elapsed_ms) }</strong> ms. Tried ${ solutionInfo.paths_tried } paths. Shortest path is ${ solutionInfo.shortest_path.length } cells.`
+}
+
+/**
+ * @desc Clears the maze's status.
+ */
+function clearStatus() {
   mazeStatus.innerText = ''
 }
