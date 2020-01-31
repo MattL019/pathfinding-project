@@ -4,10 +4,9 @@ import('../styles/main.scss')
 import MazeCanvas from 'maze-canvas'
 import { getRandomMaze, solveMaze } from './api'
 
-
 let mazeDimensions, canvasMaxWidth, basicMaze
 if (window.location.pathname === '/editor.html') { // Editor version
-  let width = 40
+  let width = 30
   
   let cellSize = window.innerWidth/width // PX in width & height for cell
   let height = Math.round((window.innerHeight-cellSize*2)/cellSize) // Height of cells
