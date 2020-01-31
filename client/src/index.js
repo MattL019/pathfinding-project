@@ -43,7 +43,7 @@ document.getElementById('btn__solve').onclick = async () => {
   mazeCanvas.loading = false
   mazeCanvas.solveMaze(solvedMaze) // Solve the maze
 
-  mazeStatus.innerText = `Solved in ${ Math.round(solvedMaze.elapsed_time_ms) } ms.`
+  mazeStatus.innerText = `Solved in ${ Math.round(solvedMaze.time_elapsed_ms) } ms.`
 }
 /**
  * @desc Resets the maze to default.
