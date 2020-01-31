@@ -35,36 +35,7 @@ body {
       margin-top: 20px;
     }
   }
-  // Maze
-  .maze {
-    grid-area: maze;
-    justify-self: center;
-    
-    .maze__controls {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
 
-      button, select {
-        cursor: pointer;
-        flex: 1;
-        &:not(:last-child) { margin-right: 10px; }
-        margin-bottom: 10px;
-        background-color: rgba(white, .5);
-        border: 2px solid #707070;
-        color: #707070;
-        font-family: 'Roboto';
-        font-weight: 800;
-        font-size: 1.2em;
-        padding: 5px 15px;
-      }
-    }
-
-    #maze__status {
-      font-family: Consolas, 'Courier New', Courier, monospace;
-      margin-top: 10px;
-    }
-  }
   // Instructions
   .instructions {
     grid-area: instructions;
@@ -101,6 +72,51 @@ body {
       &:nth-child(2)::before { content: "2" }
       &:nth-child(3)::before { content: "3" }
     }
+  }
+}
+
+// Maze
+.maze {
+  grid-area: maze;
+  justify-self: center;
+  
+  .maze__controls {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    
+    button, select {
+      cursor: pointer;
+      flex: 1;
+      &:not(:last-child) { margin-right: 10px; }
+      margin-bottom: 10px;
+      background-color: rgba(white, .5);
+      border: 2px solid #707070;
+      color: #707070;
+      font-family: 'Roboto';
+      font-weight: 800;
+      font-size: 1.2em;
+      padding: 5px 15px;
+
+      &:hover {
+        background-color: rgba(black, .05)
+      }
+    }
+
+    // Full Editor version
+    &.maze__controls--editor {
+      border: 2px solid #707070;
+
+      button, select {
+        &:not(:last-child) { margin-right: 0 }
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  #maze__status {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    margin-top: 10px;
   }
 }
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Pathfinder Editor</title>
+</head>
+<body>
+  <main class='maze'>
+    <div class='maze__controls maze__controls--editor'>
+      <select name="algorithm-selector" id='select__algorithm'>
+        <option value="breadth_first_search" selected>Breadth First Search</option>
+      </select>
+      <button id='btn__solve'>Solve</button>
+      <button id='btn__reset'>Reset</button>
+      <button id='btn__scramble'>Scramble</button>
+    </div>
+    <canvas id='maze-canvas'></canvas>
+    <p id='maze__status'></p>
+  </main>
+
+  <script src='/main.js'>
+    const editor = true
+  </script>
+</body>
+</html>

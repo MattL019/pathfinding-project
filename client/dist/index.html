@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <title>Pathfinder</title>
+</head>
+<body>
+  
+  <div class='grid'>
+
+    <header class='header'>
+      <img src="/images/Type.svg" alt="Exploring Path Finding Algorithms">
+      <p>with Matthew Lang</p>
+    </header>
+
+    <main class='maze'>
+      <div class='maze__controls'>
+        <select name="algorithm-selector" id='select__algorithm'>
+          <option value="breadth_first_search" selected>Breadth First Search</option>
+        </select>
+        <button id='btn__solve'>Solve</button>
+        <button id='btn__reset'>Reset</button>
+        <button id='btn__scramble'>Scramble</button>
+      </div>
+      <canvas id='maze-canvas'></canvas>
+      <p id='maze__status'></p>
+    </main>
+
+    <section class='instructions'>
+      <ol>
+        <li>Click n' drag on the maze to form walls</li>
+        <li>Select an algorithm</li>
+        <li>Click 'Solve' and watch the algorithm solve your maze</li>
+      </ol>
+    </section>
+
+  </div>
+
+
+  <script src='/main.js'></script>
+</body>
+</html>
