@@ -7,12 +7,6 @@ import queue, time
 # 2. A list of coordinates that maps out the shortest path
 # 3. Time elapsed to solve the maze
 
-def resolve_path(path, start):
-  """Translates cardinal path into coordinates respective of starting position"""
-  offset_x = -path.count('L') + path.count('R')
-  offset_y = -path.count('U') + path.count('D')
-  return (start[0]+offset_x, start[1]+offset_y) # (x, y)
-
 def valid_pos(maze, start, path, new_move):
   """Returns True if new move provided is considered valid by the algorithm"""
 
