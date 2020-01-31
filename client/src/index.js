@@ -4,19 +4,21 @@ import('../styles/main.scss')
 import MazeCanvas from 'maze-canvas'
 import { getRandomMaze, solveMaze } from './api'
 
-let mazeDimensions, canvasMaxWidth, basicMaze
+let mazeDimensions, canvasMaxWidth, basicMaze, solveSpeed
 if (window.location.pathname === '/editor.html') { // Editor version
-  let width = 30
+  let width = 50
   
   let cellSize = window.innerWidth/width // PX in width & height for cell
   let height = Math.round((window.innerHeight-cellSize*2)/cellSize) // Height of cells
 
   mazeDimensions = [width, height]
   canvasMaxWidth = window.innerWidth
+  solveSpeed = 10
   basicMaze = [['O', 'X']]
 } else { // Display version
   mazeDimensions = [9,9]
   canvasMaxWidth = 600
+  solveSpeed = 50
 
   // Starting maze
   basicMaze = [
@@ -34,7 +36,8 @@ if (window.location.pathname === '/editor.html') { // Editor version
 
 const mazeCanvas = new MazeCanvas("maze-canvas", {
   mazeDimensions,
-  canvasMaxWidth
+  canvasMaxWidth,
+  solveSpeed
 })
 
 
