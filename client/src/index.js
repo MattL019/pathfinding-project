@@ -41,11 +41,10 @@ document.getElementById('btn__solve').onclick = async () => {
   mazeCanvas.loading = true
   const solvedMaze = await solveMaze(algorithm, currentMaze) // Call API for solved maze
 
-  console.log(solvedMaze)
+  // If the maze does not have an error (timeout or impossible) then visualize the solve
+  if (!solvedMaze.error) mazeCanvas.solveMaze(solvedMaze) // Solve the maze
 
   mazeCanvas.loading = false
-  mazeCanvas.solveMaze(solvedMaze) // Solve the maze
-
   setStatus(solvedMaze) // set maze status
 }
 /**
@@ -81,7 +80,11 @@ document.getElementById('btn__scramble').onclick = async () => {
  * @param { object } solutionInfo 
  */
 function setStatus(solutionInfo) {
-  mazeStatus.innerHTML = `Solved in <strong>${ Math.round(solutionInfo.time_elapsed_ms) }</strong> ms. Tried ${ solutionInfo.paths_tried } paths. Shortest path is ${ solutionInfo.shortest_path.length } cells.`
+  if (solutionInfo.error) {
+    mazeStatus.innerText = `Error! ${ solutionInfo.error }`
+  } else {
+    mazeStatus.innerText = `Solved in ${ Math.round(solutionInfo.time_elapsed_ms) } ms. Tried ${ solutionInfo.paths_tried } paths. Shortest path is ${ solutionInfo.shortest_path.length } cells.`
+  }
 }
 
 /**

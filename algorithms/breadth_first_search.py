@@ -1,84 +1,96 @@
-import queue, time
-"""Simple implementation of Breadth First Search algorithm"""
+"""Revised implementation of breadth first search algorithm - v2"""
 
-opposite_directions = { "L": "R", "R": "L", "U": "D", "D": "U" }
+import queue, time
+
+# Output requirements
+# 1. A 2D list, each index contains a list of coordinates for that step
+# 2. A list of coordinates that maps out the shortest path
+# 3. Time elapsed to solve the maze
 
 def resolve_path(path, start):
-  """Translates the given path into the respective coordinates"""
+  """Translates cardinal path into coordinates respective of starting position"""
   offset_x = -path.count('L') + path.count('R')
   offset_y = -path.count('U') + path.count('D')
-  return (start[0]+offset_x, start[1]+offset_y)
+  return (start[0]+offset_x, start[1]+offset_y) # (x, y)
 
-def valid_pos(maze, path, start):
-  """Returns True if the path leads to a valid position in the maze"""
+def valid_pos(maze, start, path, new_move):
+  """Returns True if new move provided is considered valid by the algorithm"""
 
-  # Check if we are going backwards, e.g LR, RL, UD, DU as these are contradicting moves
-  if len(path) >= 2 and path[-2] == opposite_directions[path[-1]]: return False
-  
-  x, y = resolve_path(path, start) # Get path's final coordinates
-  return True if (y >= 0 and y < len(maze)) and (x >= 0 and x < len(maze[0])) and [" ", "X", "O"].count(maze[y][x]) > 0 else False
+  # 1. Ensure the path is not turning back on itself
+  if len(path) >= 2 and path[-2] == new_move: return False
+  # New move x and y coordinates
+  x, y = new_move
+  # 2. Check if the new coordinates are not already visited in this path
+  for coord in path:
+    if coord == new_move: 
+      return False
 
-def end_pos(maze, path, start):
-  """Returns True if the path leads to the end position in the maze"""
-  x, y = resolve_path(path, start)
-  return True if maze[y][x] == "X" else False
+  if ( # 3. Ensure x and y coords are within the maze dimensions
+    y < 0 or y >= len(maze) or x < 0 or x >= len(maze[0]) or 
+    maze[y][x] == "#" # 4. Ensure end coordinate is not a wall
+  ): return False
+
+  return True # All checks passed. Position is valid
 
 def find_start(maze):
-  """Returns the starting position coordinates of the maze, or False if none"""
-  for y in range(len(maze)): # Find starting position
+  """Returns a tuple containing (x, y) starting position of provided maze"""
+  for y in range(len(maze)):
     for x in range(len(maze[y])):
-      if maze[y][x] == "O": return (x, y)
-  return False
+      if maze[y][x] == "O": return (x, y) # Check each point in maze, return coords with start position
+  return False # False if we did not find a starting position
 
-def solve(maze):
-  """Solves the maze"""
-  start = find_start(maze)
-  if not start: return "Maze does not have a starting position." # Ensure maze has a starting position
-  q = queue.Queue() # Create a blank Queue 
-  q.put("") # with an empty path
-  newest_path = "" # Start with a blank newest path
-  start_time = time.time() # Start a timer
-  visited_paths = [] # A list of all visisted coorindates - for visual representation
-  timed_out = False
+def solve(maze, timeout=5):
+  """Solves provided maze, returning the visited coordinates, shortest path and time elapsed"""
+  start = find_start(maze) # (x, y) starting position
 
-  while not end_pos(maze, newest_path, start): # While the newest path does not lead to the end
-    # Timeout if cannot find goal after 5 seconds
-    if time.time() - start_time > 100: 
-      timed_out = True
-      break
+  if not start: return False # Maze does not have a starting position
 
-    newest_path = q.get()
-    for dir in ['L', 'R', 'U', 'D']:
+  q = queue.Queue() # Our path queue
+  q.put([start]) # Begin at the start
 
-      # Check if the current direction is valid
-      potential_path = newest_path + dir
-      if valid_pos(maze, potential_path, start): 
-        q.put(potential_path) # If our potential new path is valid, add it to the queue
-        visited_paths.append(potential_path)
+  start_time = time.time() # Store the starting time
+  shortest_path = [] # Stores the shortest path
+  paths_tried = 0
+  visited_coordinates = [] # Stores all of our visited coordinates for visual representation
 
-  # If our loop has ended then "newest_path" must be the shortest possible path leading to the end
+  # While we do not have a shortest path
+  while len(shortest_path) == 0:
+    if (time.time() - start_time) > timeout: return { "error": "Timed out" } # Return error if algo takes longer than timeout
 
-  elapsed_time = round((time.time() - start_time) * 1000, 3) # Get elapsed time
+    paths_tried += 1
 
-  visited_coordinates = [] # A list of visited coordinates
-  for i, path in enumerate(visited_paths):
-    coords = resolve_path(path, start) # Get coords of current path
-    try: 
-      visited_coordinates.index(coords) # Check if coords have already been visited
-      continue # skip if coord found
-    except: visited_coordinates.append(coords)
+    # Our queue is empty which means there are no more possible paths. Impossible maze
+    if q.empty(): return { "error": "Maze is impossible" } 
 
-  return "Took too long to find path, timed out" if timed_out else {
-    "shortest_path": newest_path,
-    "elapsed_time_ms": elapsed_time,
-    "visited_paths": visited_paths,
-    "visited_coordinates": visited_coordinates
+    current_path = q.get() # Retrieve oldest path from queue
+
+    for move in [(-1, 0), (1, 0), (0, 1), (0, -1)]: # Loop through each direction
+      # our potential path, by adding the current move tuple
+      potential_move = (current_path[-1][0] + move[0], current_path[-1][1] + move[1])
+      # Check is new move coords are valid. Continue/skip if not..
+      if not valid_pos(maze, start, path=current_path, new_move=potential_move): continue
+
+      new_path = current_path + [potential_move] # Form our new valid path
+
+      # If potential path leads to END of maze, set shortest path, which breaks while loop
+      if maze[potential_move[1]][potential_move[0]] == "X":
+        shortest_path = new_path
+        break
+
+      # Potential path is not shortest but is valid - add to queue
+      q.put(new_path)
+      visited_coordinates.append(potential_move) # Add new coords to visited coordinates
+
+  return {
+    "visited_coordinates": list(dict.fromkeys(visited_coordinates)),
+    "paths_tried": paths_tried,
+    "shortest_path": shortest_path,
+    "time_elapsed_ms": round((time.time() - start_time) * 1000, 3) # Calculate time elapsed
   }
 
-
-#Example
+# Example
 """print(solve([
-  ["O"," ","#"],
-  [" "," ","#"],
+  ["O","#","#"],
+  ["#","#","#"],
   ["#"," ","X"]
 ]))"""

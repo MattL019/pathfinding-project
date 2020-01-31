@@ -1,6 +1,6 @@
 from flask import Flask, Response, request
 from flask_cors import CORS
-from algorithms import breadth_first_search, breadth_first_search_v2
+from algorithms import breadth_first_search
 from algorithms.maze_generator import generate_maze
 
 app = Flask(__name__)
