@@ -6,7 +6,7 @@ import { getRandomMaze, solveMaze } from './api'
 
 let mazeDimensions, canvasMaxWidth, basicMaze, solveSpeed
 if (window.location.pathname === '/editor.html') { // Editor version
-  let width = 50
+  let width = 60
   
   let cellSize = window.innerWidth/width // PX in width & height for cell
   let height = Math.round((window.innerHeight-cellSize*2)/cellSize) // Height of cells
