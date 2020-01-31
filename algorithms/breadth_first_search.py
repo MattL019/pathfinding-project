@@ -7,14 +7,17 @@ import queue, time
 # 2. A list of coordinates that maps out the shortest path
 # 3. Time elapsed to solve the maze
 
-def valid_pos(maze, start, path, new_move):
+def valid_pos(maze, start, path, new_move, latest_coords):
   """Returns True if new move provided is considered valid by the algorithm"""
 
-  # 1. Ensure the path is not turning back on itself
+  # Ensure new move is not already being considered by another path
+  if new_move in latest_coords: return False
+
+  # Ensure the path is not turning back on itself
   if len(path) >= 2 and path[-2] == new_move: return False
   # New move x and y coordinates
   x, y = new_move
-  # 2. Check if the new coordinates are not already visited in this path
+  # Check if the new coordinates are not already visited in this path
   for coord in path:
     if coord == new_move: 
       return False
@@ -46,6 +49,7 @@ def solve(maze, timeout=5):
   shortest_path = [] # Stores the shortest path
   paths_tried = 0
   visited_coordinates = [] # Stores all of our visited coordinates for visual representation
+  latest_coords = set() # A set of our 'latest' coords visited by our potential paths
 
   # While we do not have a shortest path
   while len(shortest_path) == 0:
@@ -62,7 +66,7 @@ def solve(maze, timeout=5):
       # our potential path, by adding the current move tuple
       potential_move = (current_path[-1][0] + move[0], current_path[-1][1] + move[1])
       # Check is new move coords are valid. Continue/skip if not..
-      if not valid_pos(maze, start, path=current_path, new_move=potential_move): continue
+      if not valid_pos(maze, start, path=current_path, new_move=potential_move, latest_coords=latest_coords): continue
 
       new_path = current_path + [potential_move] # Form our new valid path
 
@@ -71,9 +75,12 @@ def solve(maze, timeout=5):
         shortest_path = new_path
         break
 
-      # Potential path is not shortest but is valid - add to queue
-      q.put(new_path)
+      latest_coords.add(potential_move) # Add the new coords to latest coords
+
+      q.put(new_path) # Potential path is not shortest but is valid - add to queue
       visited_coordinates.append(potential_move) # Add new coords to visited coordinates
+
+    if len(current_path) >= 2: latest_coords.remove(current_path[-1]) # Remove this path's previous latest coords
 
   return {
     "visited_coordinates": list(dict.fromkeys(visited_coordinates)),
