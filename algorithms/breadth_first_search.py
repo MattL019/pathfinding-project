@@ -62,6 +62,7 @@ def solve(maze, timeout=5):
 
     current_path = q.get() # Retrieve oldest path from queue
 
+    # add (-1,-1), (-1,1), (1,1), (1,-1) to move list for diagonals
     for move in [(-1, 0), (1, 0), (0, 1), (0, -1)]: # Loop through each direction
       # our potential path, by adding the current move tuple
       potential_move = (current_path[-1][0] + move[0], current_path[-1][1] + move[1])
